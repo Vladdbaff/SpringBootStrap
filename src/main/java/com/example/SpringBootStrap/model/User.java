@@ -4,28 +4,35 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private String username;
+    /*@NotEmpty
+    @Size(min = 2, max = 30, message = "firstName should be between 2 and 30 characters")*/
+    private String firstName;
 
-    @Column
+    /*@NotEmpty
+    @Size(min = 2, max = 30, message = "lastName should be between 2 and 30 characters")*/
     private String lastName;
 
-    @Column
+    /*@NotEmpty
+    @Email(message = "email should be valid")*/
     private String email;
 
-    @Column
+    /*@NotEmpty(message = "password should not be empty")*/
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -36,8 +43,8 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String username, String lastName, String email, String password, Set<Role> roles) {
-        this.username = username;
+    public User(String firstName, String lastName, String email, String password, Set<Role> roles) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
@@ -69,12 +76,20 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -127,7 +142,7 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", username='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -135,5 +150,16 @@ public class User implements UserDetails {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -10,6 +10,8 @@ public interface RoleDao {
 
     Set<Role> getRoleByName(String[] name);
 
+    Set<Role> getRolesById(Long[] name);
+
 
 
 }

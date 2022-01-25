@@ -3,10 +3,9 @@ package com.example.SpringBootStrap.service;
 
 import com.example.SpringBootStrap.dao.UserDao;
 import com.example.SpringBootStrap.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,16 +14,18 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserDao userRepository;
+    private final UserDao userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userRepository) {
+    public UserServiceImpl(UserDao userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.saveUser(user);
 
     }
@@ -39,25 +40,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(User user) {
-        userRepository.saveUser(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.updateUser(user);
 
     }
 
     @Override
-    @Transactional
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
 
     @Override
-    @Transactional
     public User getUser(long id) {
         return userRepository.getUserById(id);
 
     }
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.getUserByEmail(s);
     }

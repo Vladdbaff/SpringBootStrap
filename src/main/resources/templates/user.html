@@ -32,7 +32,7 @@ xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="col-md-2 bg-white">
         <ul class="nav nav-pills flex-column mt-3">
             <a class="nav-item nav-link" th:href="@{/admin}" sec:authorize="hasAnyRole('ROLE_ADMIN')">Admin</a>
-            <a class="nav-item nav-link active" th:href="@{/users}">User</a>
+            <a class="nav-item nav-link active" th:href="@{/user}">User</a>
         </ul>
     </div>
 

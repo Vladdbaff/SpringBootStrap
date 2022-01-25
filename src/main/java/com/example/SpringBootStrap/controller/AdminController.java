@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/user")
 public class AdminController {
 
 
@@ -26,10 +26,10 @@ public class AdminController {
 
     }
 
-    @GetMapping()
+    @GetMapping
     public String mainPage(Model model, Principal principal){
         User user = (User) userService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", user);
+        model.addAttribute("currentUser", user);
         model.addAttribute("users", userService.getAllUsers());
         return "admin";
     }
@@ -41,22 +41,21 @@ public class AdminController {
                              @RequestParam(value = "lastname", required = false) String lastName,
                              @RequestParam(value = "email", required = false) String email,
                              @RequestParam(value = "password", required = false) String password,
-                             @RequestParam(name = "roles", required = false) String[] roles) {
+                             @RequestParam(name = "roles", required = false) Long[] rolesId) {
         User user = userService.getUser(id);
-
-        user.setUsername(firstName);
+        user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(password);
-        user.setRoles(roleService.getRoleByName(roles));
+        user.setRoles(roleService.getRolesById(rolesId));
         userService.updateUser(user);
-        return "redirect:/admin";
+        return "redirect:/admin/user";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") long id) {
         userService.removeUser(id);
-        return "redirect:/admin";
+        return "redirect:/admin/user";
     }
 
     @PostMapping("/new")
@@ -64,10 +63,10 @@ public class AdminController {
                           @RequestParam("lastname") String lastName,
                           @RequestParam("email") String email,
                           @RequestParam("password") String password,
-                          @RequestParam("roles") String [] roles) {
-        User user = new User(firstName, lastName, email, password, roleService.getRoleByName(roles));
+                          @RequestParam("roles") Long[] rolesId) {
+        User user = new User(firstName, lastName, email, password, roleService.getRolesById(rolesId));
         userService.saveUser(user);
-        return "redirect:/admin";
+        return "redirect:/admin/user";
     }
 
 }

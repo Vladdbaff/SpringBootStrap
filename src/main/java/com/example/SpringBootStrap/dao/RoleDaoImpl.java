@@ -21,8 +21,15 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public Set<Role> getRoleByName(String[] name) {
         List<String> roles = Arrays.asList(name);
-        return new HashSet<Role>(entityManager.createQuery("select r from Role r where r.role in (:stringRoles)", Role.class)
-                                    .setParameter("stringRoles", roles).getResultList());
+        return new HashSet<Role>(entityManager.createQuery("SELECT r FROM Role r WHERE r.role IN (:stringRoles)", Role.class)
+                .setParameter("stringRoles", roles).getResultList());
+    }
+
+    @Override
+    public Set<Role> getRolesById(Long[] rolesId) {
+        List<Long> roles = Arrays.asList(rolesId);
+        return new HashSet<Role>(entityManager.createQuery("SELECT r FROM Role r WHERE r.id IN (:IdRoles)", Role.class)
+                .setParameter("IdRoles", roles).getResultList());
     }
 
 
